@@ -44,3 +44,27 @@ resource "digitalocean_project" "gudcodes" {
     digitalocean_floating_ip.gudcodes.urn,
   ]
 }
+
+resource "digitalocean_spaces_bucket" "terraform" {
+  name   = "gudcodes-terraform"
+  region = "sfo2"
+  acl    = "private"
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET"]
+    allowed_origins = ["*"]
+    max_age_seconds = 3000
+  }
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["PUT", "POST", "DELETE"]
+    allowed_origins = ["https://${digitalocean_domain.dev.name}"]
+    max_age_seconds = 3000
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
